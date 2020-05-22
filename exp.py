@@ -42,5 +42,3 @@ Nara = [
 #Read.one('nation_standard_relation.json')
 
 #print(InstantLoad('기술').convert_list())
-
-print(native_generator())

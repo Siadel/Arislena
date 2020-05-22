@@ -278,7 +278,7 @@ class Eolmana(Command):
         m = today.month
         d = today.day
         howmuch = datetime.datetime(y, m, d) - datetime.datetime(2020, 3, 11)
-        await message.channel.send('오늘은 개발 **{}**일차야.'.format(howmuch.days))
+        await message.channel.send('오늘은 개발일부터 **{}**일이 지났어.'.format(howmuch.days))
 
 
 class Stop(Command):
@@ -422,6 +422,7 @@ class Refresh(Command):
 
 
 # 왕
+class CurrentStats
 
 class SetWarrior(Command):
     def __init__(self):
@@ -479,7 +480,7 @@ class Price(Command):
 
 class Buy(Command):
     def __init__(self):
-        super().__init__('구매', '왕', 4, '자금을 써서 소유한 지역 하나의 스탯을 얻는 명령어야.', ms.Buy())
+        super().__init__('구매', '왕', 4, '자금을 써서 소유한 지역 하나의 스탯을 얻는 명령어야.', M.Buy.desc)
 
     async def execute(self, message, parsed, permission, args):
         try:
@@ -754,6 +755,13 @@ class Ari(Command):
                     emb.add_field(name='이 다음에 하게 될 것:', value=ms.ari.helpme_helpyou, inline=False)
                     await message.channel.send(embed=emb)
 
+class Show(Command):
+    def __init__(self):
+        super().__init__('열람', '모두', 0, '검색어와 검색값에 해당하는 나라나 지역 정보를 열람하는 명령어야.', )
+
+    async def execute(self, message, parsed, permission, args):
+        pass
+
 # 커맨드 사전
 # 커맨드 이름 : 실행
 comm_dict = {Command.name: Command for Command in [
@@ -764,7 +772,7 @@ comm_dict = {Command.name: Command for Command in [
     Colonize(), Transfer(), Merge(),
     Expel(), Refresh(),
     # 왕 명령어
-    CurrentState(), SetWarrior(), Price(),
+    CurrentStats(), SetWarrior(), Price(),
     Buy(), Sell(),
     # 모두 명령어
     Ari(), Show()
@@ -796,17 +804,21 @@ async def on_message(message):
     key = name + "#" + disc
     current_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     p = parse(message.content)
+    # 유저가 치는 채팅을 인식해서 나눠 p에 할당하는데,
+    # 형식상 알맞지 않은 채팅(!로 시작하지 않음)이면 None을 반환한다.
 
-    if p is not None:
+    if p is not None: # 명령어가 형식상 적절할 경우
         try:
             if play_stopped and not check_permission(message.author) == '관리자':
+                # '중지'되어 있으면, 관리자가 아닌 사람이 명령어를 치면 로그를 콘솔에 출력하고 await 이하를 디코에 출력한다.
                 print(current_time, key, check_permission(message.author), message.content, "CANCELED!", sep="\t")
                 await message.channel.send('지금은 관리자만 명령할 수 있어.')
                 return
             else:
+                # 명령어 상위 클래스인 Command의 check을 통해 유효성을 검사하고 명령어를 실행한다.
                 await comm_dict[p[0]].check(message, p, check_permission(message.author), len(p))
-                print(current_time, key, check_permission(message.author), len(p), message.content, sep="\t")
-        except KeyError:
+                print(current_time, key, check_permission(message.author), len(p), message.content, sep="\t") # 로그 콘솔 출력
+        except KeyError: # 명령어가 옳지 않으면 오류 메세지를 출력한다.
             await message.channel.send('{0} 같은 명령어는 없어. "!아리"로 명령어를 검색해 봐.'.format(p[1]))
 
 token = token.token

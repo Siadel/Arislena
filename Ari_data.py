@@ -946,13 +946,29 @@ def native_generator():
     capi_plus = Formula.capital_plus(lv)
 
     # 기본 스탯 정보
-    default = 24
-    A = random.randint(0, default)
-    B = random.randint(0, default - A)
-    C = random.randint(0, default - (A + B))
-    D = default - (A + B + C)
+    # 몰빵 확률이 높음 (더 정확한 랜덤을 위한 코드 개선 환영)
+    def partition(number: int, space: int):
+        rtn = []
 
-    base = [A, B, C, D]
+        if space < 1:
+            return None
+        elif space >= 1:
+            li = ['*' for stars in range(number)]
+            for ii in range(space - 1):
+                li.insert(random.randint(0, len(li)), '|')
+
+            star = 0
+            for s in li:
+                if s == '|':
+                    rtn.append(star)
+                    star = 0
+                else:
+                    star += 1
+            rtn.append(star)
+
+        return rtn
+
+    base = partition(24, 4)
     random.shuffle(base)
 
     # 스탯 더하기

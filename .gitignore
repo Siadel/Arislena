@@ -8,6 +8,7 @@ __pycache__/
 
 # Custom
 Token.json
+silh/
 
 # Distribution / packaging
 .Python
