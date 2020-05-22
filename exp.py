@@ -1,5 +1,4 @@
 from Ari_data import *
-from Ari_msg import *
 
 Nara = [
     ['믈라미', '라녀', 'Siadel', 11, 3, 1, 5],
@@ -42,4 +41,6 @@ Nara = [
 #Read.one('area_standard_relation.json')
 #Read.one('nation_standard_relation.json')
 
-print(InstantLoad('지역').convert_list())
+#print(InstantLoad('기술').convert_list())
+
+print(native_generator())

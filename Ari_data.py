@@ -895,11 +895,10 @@ def native_generator():
     li_stat = []
     sum_stat = 0
 
-    data = AreaInfo('지역', nati_names)
-    whole_tech = data.tech
-    whole_cult = data.cult
+    whole_tech = InstantLoad('기술').convert_list()
+    whole_cult = InstantLoad('문화').convert_list()
 
-    for d in whole_tech:
+    for d in range(len(whole_tech)):
         stat = whole_tech[d] + whole_cult[d]
         sum_stat += stat
         li_stat.append(stat)
