@@ -42,3 +42,5 @@ Nara = [
 #Read.one('nation_standard_relation.json')
 
 #print(InstantLoad('기술').convert_list())
+
+print(Formula.belligerence(275, 275, 5, 5, 550, 550))

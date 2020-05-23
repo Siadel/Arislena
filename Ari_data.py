@@ -164,7 +164,7 @@ class File:
         'NationPolicy': ['atk_strategy', 'def_strategy', 'territory', 'local_manage', 'metro_radius',
                          'diplomacy'],
         'NationExtra': ['origin_nati', 'origin_owner', 'user_native', 'protect_remain'],
-        'AreaInfo': ['area_name', 'area_owner', 'food', 'matl', 'tech', 'cult', 'warrior', 'royalty', 'properties'],
+        'AreaInfo': ['area_name', 'area_owner', 'food', 'matl', 'tech', 'cult', 'warrior', 'royalty', 'wariness', 'properties'],
         'AreaPolicy': ['food_storage', 'food_produce', 'matl_storage', 'matl_produce', 'tech_invest',
                        'cult_invest'],
         'AreaExtra': ['early_food', 'early_matl', 'early_tech', 'early_cult'],
@@ -176,12 +176,12 @@ class File:
     columns_translate = {
         # columns에 대한 한국어 번역
         'system' : ['식량재고', '자재재고', '식량가격', '자재가격', '주기횟수', '원주민번호'],
-        'NationInfo': ['나라', '오너', '자금', '빚', '상환기간', '투자점수', '정책행동', '호전성'],
-        'NationPolicy': ['공격전략', '방어전략', '영토', '내정', '수도권', '외교'],
-        'NationExtra': ['본래나라', '본래오너', '유저여부', '보호기간'],
-        'AreaInfo': ['지역', '지역오너', '식량', '자재', '기술', '문화', '공격병', '충성도', '속성'],
-        'AreaPolicy': ['식량창고', '자재생산', '자재창고', '자재생산', '기술투자', '문화투자'],
-        'AreaExtra': ['초기식량', '초기자재', '초기기술', '초기문화'],
+        'NationInfo' : ['나라', '오너', '자금', '빚', '상환기간', '투자점수', '정책행동', '호전성'],
+        'NationPolicy' : ['공격전략', '방어전략', '영토', '내정', '수도권', '외교'],
+        'NationExtra' : ['본래나라', '본래오너', '유저여부', '보호기간'],
+        'AreaInfo' : ['지역', '지역오너', '식량', '자재', '기술', '문화', '공격병', '충성도', '경계도', '속성'],
+        'AreaPolicy' : ['식량창고', '자재생산', '자재창고', '자재생산', '기술투자', '문화투자'],
+        'AreaExtra' : ['초기식량', '초기자재', '초기기술', '초기문화'],
    }
 
     names = [f for f in columns]
@@ -482,8 +482,8 @@ class Make(File):
                  Formula.belligerence(food, matl, early_tech, early_cult, food, matl))
         cls.fill(cls.NP, 0, 0, 0, 0, 0, 0) # 전부 기본값 0
         cls.fill(cls.NE, nati_name, owner, True, 7) # 나라명, 오너명, 유저, 보호 일수
-        # 지역명, 기준 (식량, 자재) 스탯, 기술, 문화, 공격병, 충성도, 지역속성
-        cls.fill(cls.AI, area_name, owner, food, matl, early_tech, early_cult, 0, 1000, '수도')
+        # 지역명, 기준 (식량, 자재) 스탯, 기술, 문화, 공격병, 충성도, 경계도, 지역속성
+        cls.fill(cls.AI, area_name, owner, food, matl, early_tech, early_cult, 0, 1000, 0, '수도')
         cls.fill(cls.AP, 0, 0, 0, 0, 0, 0) # 전부 기본값 0
         cls.fill(cls.AE, early_food, early_matl, early_tech, early_cult) # 초기 스탯
         # 지역 기준 관계 파일
