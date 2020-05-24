@@ -917,7 +917,7 @@ def native_generator():
     standard.setdefault('1t', (tog_avr, tog_biggest))
     standard.setdefault('1i', (indiv_avr, indiv_biggest))
 
-    for i in range(3):
+    for i in range(4):
         tog_avr = round(tog_avr * 1.5)
         tog_biggest = Formula.biggest(tog_avr)
         indiv_avr = Formula.indiv_(tog_avr)
