@@ -1,10 +1,10 @@
 # 프로그램 구성에 필요한 외부 모듈 가져오기
 import discord
-
 import datetime
+import random
 # 프로그램 구성에 필요한 내부 모듈 가져오기
-from Ari_data import *
-import Ari_msg as M
+import Ari_data as dt
+import Ari_msg as ms
 
 play_stopped = False
 ari = discord.Client()
@@ -22,7 +22,7 @@ def solve(a, b, c, d, e, f):
 
 
 admin_list = ["DRTN#8341", "Siadel#7457", "paxbun#6463"]
-king_list = InstantLoad('오너').convert_list()
+king_list = dt.InstantLoad('오너').convert_list()
 
 
 def check_permission(author):
@@ -104,7 +104,7 @@ def parse(message):
 
 
 def sorted_nati_name():
-    il = InstantLoad
+    il = dt.InstantLoad
     nati_name = il('나라').convert_list()
     nati_name.sort()
     user = il('오너').convert_list()
@@ -118,19 +118,19 @@ def sorted_nati_name():
 class ArgsError(Exception):
     # 명령어 자릿수 예외
     def __init__(self, args_needed, command):
-        super().__init__('방금 명령어는 **{0}**자리야.\n**!아리 {1}** 명령어로 자세히 알아보는 건 어때?'.format(args_needed, command))
+        super().__init__(f'방금 명령어는 **{args_needed}**자리야.\n**!아리 {command}** 명령어로 자세히 알아보는 건 어때?')
 
 
 class MinArgsError(Exception):
     # 최소 명령어 자릿수 예외
     def __init__(self, min_args_needed, command):
-        super().__init__('방금 명령어는 최소 **{0}**자리야.\n"!아리 {1}" 명령어로 자세히 알아보는 건 어때?'.format(min_args_needed, command))
+        super().__init__(f'방금 명령어는 최소 **{min_args_needed}**자리야.\n"!아리 {command}" 명령어로 자세히 알아보는 건 어때?')
 
 
 class PermiError(Exception):
     # 권한 예외
     def __init__(self, perm_needed, command):
-        super().__init__('방금 명령어는 **{0}**만 쓸 수 있어.\n"!아리 {1}" 명령어로 자세히 알아보는 건 어때?'.format(perm_needed, command))
+        super().__init__(f'방금 명령어는 **{perm_needed}**만 쓸 수 있어.\n"!아리 {command}" 명령어로 자세히 알아보는 건 어때?')
 
 
 class DifferentTypeError(Exception):
@@ -155,9 +155,9 @@ class SumError(Exception):
     # 합 예외
     def __init__(self, string, shouldbe, howmuch):
         if howmuch > shouldbe:
-            super().__init__('{0} 합이 {1}이 돼야 해.\n{2}만큼 빼면 되겠다.'.format(string, shouldbe, howmuch - shouldbe))
+            super().__init__(f'{string} 합이 {shouldbe}이 돼야 해.\n{howmuch - shouldbe}만큼 빼면 되겠다.')
         if howmuch < shouldbe:
-            super().__init__('{0} 합이 {1}이 돼야 해.\n{2}만큼 더하면 되겠다.'.format(string, shouldbe, shouldbe - howmuch))
+            super().__init__(f'{string} 합이 {shouldbe}이 돼야 해.\n{shouldbe - howmuch}만큼 더하면 되겠다.')
 
 
 class DupliNatiError(Exception):
@@ -186,7 +186,7 @@ class StopError(Exception):
 class NotEnoughCapitalError(Exception):
     # 돈이 부족한 예외
     def __init__(self, howmuch):
-        super().__init__('돈이 **{}**만큼 부족해..!'.format(howmuch))
+        super().__init__(f'돈이 **{howmuch}**만큼 부족해..!')
 
 
 class NotEnoughResourceError(Exception):
@@ -194,11 +194,11 @@ class NotEnoughResourceError(Exception):
     def __init__(self, what, *howmuch):
         msg = ''
         if what == '식량' and howmuch[0] > 0:
-            msg = '식량이 **{}**만큼 부족해..!'.format(howmuch[0])
+            msg = f'식량이 **{howmuch[0]}**만큼 부족해..!'
         elif what == '자재' and howmuch[1] > 0:
-            msg = '자재가 **{}**만큼 부족해..!'.format(howmuch[1])
+            msg = f'자재가 **{howmuch[1]}**만큼 부족해..!'
         elif what == '다':
-            msg = '식량이 **{}**, 자재가 **{}**만큼 부족해..!'.format(howmuch[0], howmuch[1])
+            msg = f'식량이 **{howmuch[0]}**, 자재가 **{howmuch[1]}**만큼 부족해..!'
 
         super().__init__(msg)
 
@@ -257,13 +257,13 @@ class Test(Command):
 
 class ModifyOne(Command):
     def __init__(self):
-        super().__init__('고치기', '관리자', 0, '데이터 하나를 강제로 고치는 명령어야.', M.ModifyOne.desc)
+        super().__init__('고치기', '관리자', 0, '데이터 하나를 강제로 고치는 명령어야.', ms.ModifyOne.desc)
 
     async def execute(self, message, parsed, permission, args):
         if args == 4:
-            File.modifyone(parsed[0], parsed[1], parsed[2], parsed[3])
+            dt.File.modifyone(parsed[0], parsed[1], parsed[2], parsed[3])
         elif args == 5:
-            File.modifyone(parsed[0], parsed[1], parsed[2], parsed[3], parsed[4])
+            dt.File.modifyone(parsed[0], parsed[1], parsed[2], parsed[3], parsed[4])
 
         # 이전, 이후 값을 embed로 출력해야 함
 
@@ -309,7 +309,7 @@ class Restart(Command):
 
 class MakeNation(Command):
     def __init__(self):
-        super().__init__('건국', '관리자', 8, '유저 나라를 만드는 명령어야.', M.MakeNation.desc)
+        super().__init__('건국', '관리자', 8, '유저 나라를 만드는 명령어야.', ms.MakeNation.desc)
 
     async def execute(self, message, parsed, permission, args):
         try:
@@ -325,17 +325,17 @@ class MakeNation(Command):
             if not hap == limit:
                 raise SumError('초기 스탯', limit, hap)
 
-            Make.user_nation(area_name, nati_name, owner, food, matl, tech, cult)
+            dt.Make.user_nation(area_name, nati_name, owner, food, matl, tech, cult)
 
             # 나라정보, 지역정보, 지역기타 데이터 찾기
-            ni = NationInfo('나라', nati_name)
-            ai = AreaInfo('나라', nati_name)
-            ae = AreaExtra('나라', nati_name)
+            ni = dt.NationInfo('나라', nati_name)
+            ai = dt.AreaInfo('나라', nati_name)
+            ae = dt.AreaExtra('나라', nati_name)
             nid = ni.nati_ID[0] # 나라 ID
             aid = ni.area_ID[nid][0] # 수도 ID
 
             # 초기 스탯, 현재 스탯, 현재 자금, 최대 자금, 최저 자금
-            max_capi = Formula.max_capi(ai.tech[aid], ai.cult[aid])
+            max_capi = dt.Formula.max_capi(ai.tech[aid], ai.cult[aid])
 
             emb = discord.Embed(title='새 나라가 나타났어!')
             # "!열람"과 구분할 필요성 있음 (지금은 열람 명령어를 정의하기 이전 상태)
@@ -343,12 +343,12 @@ class MakeNation(Command):
             # 초기 식량, 초기 자재, 초기 기술, 초기 문화, 현재 식량, 현재 자재,
             # 현재 자금, 최대 자금, 최저 자금,
             # 가용 정책 점수
-            value = M.MakeNation.embed_done.format(
+            value = ms.MakeNation.embed.format(
                 ni.nati_owner[nid], ni.nati_name[nid], ai.area_name[aid],
                 ae.early_food[aid], ae.early_matl[aid],
                 ae.early_tech[aid], ae.early_cult[aid],
                 ai.food[aid], ai.matl[aid],
-                ni.capital[nid], max_capi, Formula.min_capi(max_capi), ni.investable_point[nid]
+                ni.capital[nid], max_capi, dt.Formula.min_capi(max_capi), ni.investable_point[nid]
             )
             emb.add_field(name='축하해! 이제 {0}도 어엿한 [왕]이 됐어!'.format(owner), value=value)
             await message.channel.send(embed=emb)
@@ -365,19 +365,19 @@ class MakeNation(Command):
 
 class Colonize(Command):
     def __init__(self):
-        super().__init__('식민', '관리자', 3, '지역을 나라의 식민지로 만드는 명령어야.', ms.Colonize())
+        super().__init__('식민', '관리자', 3, '지역을 나라의 식민지로 만드는 명령어야.', ms.Colonize.desc)
 
     async def execute(self, message, parsed, permission, args):
         domi_nati = parsed[1]
         colo_area = parsed[2]
         try:
-            if not domi_nati in InstantLoad('나라').convert_list():
+            if not domi_nati in dt.InstantLoad('나라').convert_list():
                 raise DifferentNameError()
-            if not colo_area in InstantLoad('지역').convert_list():
+            if not colo_area in dt.InstantLoad('지역').convert_list():
                 raise DifferentNameError()
-            result = Politic.colonize(domi_nati, colo_area)
+            result = dt.Politic.colonize(domi_nati, colo_area)
             emb = discord.Embed(title='{}의 {} 식민 완료!'.format(domi_nati, colo_area))
-            emb.add_field(name='변화한 점', value=ms.ColonizeEmbed().format(
+            emb.add_field(name='변화한 점', value=ms.Colonize.embed.format(
                 result[0][1], result[1][1],
                 result[0][2], result[1][2],
                 result[0][3], result[1][3]
@@ -389,26 +389,33 @@ class Colonize(Command):
 
 class Transfer(Command):
     def __init__(self):
-        super().__init__('편입', '관리자', 3, '원주민 지역을 충성스러운 식민지로 만드는 명령어야.', ms.Transfer())
+        super().__init__('편입', '관리자', 3, '원주민 지역을 충성스러운 식민지로 만드는 명령어야.', ms.Transfer.desc)
+       
+    async def execute(self, message, parsed, permission, args):
+    	pass
 
 
 class Merge(Command):
     def __init__(self):
-        super().__init__('병합', '관리자', 3, '식민지나 편입지를 수도권으로 만드는 명령어야.', ms.Merge())
+        super().__init__('병합', '관리자', 3, '식민지나 편입지를 수도권으로 만드는 명령어야.', ms.Merge.desc)
 
+    async def execute(self, message, parsed, permission, args):
+    	pass
 
 class Expel(Command):
     def __init__(self):
-        super().__init__('추방', '관리자', 2, '식민지, 편입지, 병합지를 버리는 명령어야.', ms.Expel())
+        super().__init__('추방', '관리자', 2, '식민지, 편입지, 병합지를 버리는 명령어야.', ms.Expel.desc)
 
+    async def execute(self, message, parsed, permission, args):
+    	pass
 
 class Refresh(Command):
     def __init__(self):
-        super().__init__('새날', '관리자', 0, '아리슬레나의 시간을 흐르게 하는 명령어야.', ms.Refresh())
+        super().__init__('새날', '관리자', 0, '아리슬레나의 시간을 흐르게 하는 명령어야.', ms.Refresh.desc)
 
     async def execute(self, message, parsed, permission, args):
         if args == 1:
-            Arislena.refresh()
+            dt.refresh()
             today = datetime.datetime.today()
             y = today.year
             m = today.month
@@ -422,16 +429,17 @@ class Refresh(Command):
 
 
 # 왕
-class CurrentStats
+class CurrentStats:
+	pass
 
 class SetWarrior(Command):
     def __init__(self):
-        super().__init__('공격병', '왕', 0, '자기 지역의 공격병 비율을 변경하는 명령어야.', ms.SetWarrior())
+        super().__init__('공격병', '왕', 0, '자기 지역의 공격병 비율을 변경하는 명령어야.', ms.SetWarrior.desc)
 
     async def execute(self, message, parsed, permission, args):
         try:
-            nati_name = Load(message.author).nati_name
-            area_names = Read.my_area_names(nati_name)
+            nati_name = dt.Load(message.author).nati_name
+            area_names = dt.Read.my_area_names(nati_name)
 
             if args == 2:
 
@@ -439,7 +447,7 @@ class SetWarrior(Command):
                 if warr < 0 or warr > 1000:
                     raise Exception()
                 for area_name in area_names:
-                    changed = Politic.change_warriors(area_name, warr)
+                    changed = dt.Politic.change_warriors(area_name, warr)
 
                 await message.channel.send('공격병 비율 : {} 조정 완료!'.format(changed))
 
@@ -463,7 +471,7 @@ class SetWarrior(Command):
 
 class Price(Command):
     def __init__(self):
-        super().__init__('가격', '왕', 0, '각종 가격 정보를 알려주는 명령어야.\n!아리, 가격 필수!', ms.Price())
+        super().__init__('가격', '왕', 0, '각종 가격 정보를 알려주는 명령어야.\n!아리, 가격 필수!', ms.Price.desc)
 
     async def execute(self, message, parsed, permission, args):
         embed = discord.Embed(title='가격 정보')
@@ -480,7 +488,7 @@ class Price(Command):
 
 class Buy(Command):
     def __init__(self):
-        super().__init__('구매', '왕', 4, '자금을 써서 소유한 지역 하나의 스탯을 얻는 명령어야.', M.Buy.desc)
+        super().__init__('구매', '왕', 4, '자금을 써서 소유한 지역 하나의 스탯을 얻는 명령어야.', ms.Buy.desc)
 
     async def execute(self, message, parsed, permission, args):
         try:
@@ -708,7 +716,7 @@ class Policy(Command):
 # 모두
 class Ari(Command):
     def __init__(self):
-        super().__init__('아리', '모두', 0, '명령어를 설명하는 명령어야.', ms.ari.desc)
+        super().__init__('아리', '모두', 0, '명령어를 설명하는 명령어야.', ms.Ari.desc)
 
     async def execute(self, message, parsed, permission, args):
 
@@ -821,6 +829,6 @@ async def on_message(message):
         except KeyError: # 명령어가 옳지 않으면 오류 메세지를 출력한다.
             await message.channel.send('{0} 같은 명령어는 없어. "!아리"로 명령어를 검색해 봐.'.format(p[1]))
 
-token = token.token
+token = dt.token.token
 
 ari.run(token)
